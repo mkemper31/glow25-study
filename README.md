@@ -16,6 +16,10 @@ The server is assumed to have access to a MySQL database with local user data re
 
 Further, the server is assumed to have environment variables pointing to the Shopify API with API keys, secret keys, and other access flow tokens, along with credentials for MySQL database connection. For demonstrative purposes, those placed in the code are placeholders.
 
+Overall, the aim was to have the server-side storage be as lightweight as possible, and to leverage to the maximum extent the Shopify API's ability. I had considered storing user and product data locally, specifically those fields required for the landing page, but it seemed redundant, and it seemed a better pattern to retrieve it from the Shopify API where it already existed.
+
+The one place that didn't hold was the favorite product ID, which comes down to a few reasons. First, there is no way that I've seen for a customer to set something like a favorite. Second, it demonstrates the utility and capability of coupling server-side databases with Shopify-native databases. Finally, I did consider the possibility of deriving the chosen product from, for example, last purchased item, but that seemed to present too many edge cases (eg. a user that has not yet purchased an item). Another option considered was to combine the last-purchased item with a default "suggested" if no purchase had yet been made.
+
 ### Liquid Template
 
 The Liquid template provided is fairly barebones, which in a second pass is something I would focus on iterating upon. It exists, at this point, primarily to perform the required API function call, sending the URL query to the app proxy server.
@@ -29,6 +33,8 @@ If no response is received, or if the user ID is not provided, it will instead d
 The template is assumed to be a child of an existing Shopify theme and would exist as a component page within that environment.
 
 As said before, it's barebones and needs fleshing out, but my primary focus was on learning and implementing Shopify's GraphQL API interface and working with the app proxy setup. In a next pass, presentation would be a primary focus.
+
+Primary focus going forward would be to familiarize myself more fully with the Liquid templating system and how it can be more effectively leveraged.
 
 ### Code Overview
 
