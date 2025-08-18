@@ -1,0 +1,34 @@
+{% layout 'theme' %}
+<div id="customer-content">
+  <p>Loading your personalized page…</p>
+</div>
+
+<script>
+(async () => {
+  const params = new URLSearchParams(window.location.search);
+  const userId = params.get('user_id');
+  if (!userId) {
+    console.log('No user ID provided in the URL.');
+    document.getElementById('customer-content').innerHTML = '<p>No user specified.</p>';
+    return;
+  }
+
+  const res = await fetch(`/apps/customer-data?shop={{ shop.domain }}&user_id=${userId}`);
+  if (!res.ok) {
+    console.error('Failed to fetch user data:', res.statusText);
+    document.getElementById('customer-content').innerHTML = '<p>Unable to load user data.</p>';
+    return;
+  }
+
+  const { firstName, profileImage, product } = await res.json();
+  document.getElementById('customer-content').innerHTML = `
+    <h1>Hi, ${firstName}!</h1>
+    <img src="${profileImage}" alt="Profile image" />
+    <h2>Your Favorite Product</h2>
+    <a href="${product.onlineStoreUrl}" target="_blank">
+      <img width="${product.image.width}" height="${product.image.height}" src="${product.image.url}" alt="${product.image.alt}" />
+      <p>${product.title}</p>
+    </a>
+  `;
+})();
+</script>
