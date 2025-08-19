@@ -93,6 +93,10 @@ app.get('/users', (req, res) => {
             if (err) {
                 return res.status(500).json({ error: 'Database query error' });
             }
+            if (results.length === 0) {
+                return res.status(404).json({ error: 'Favorite product not found' });
+            }
+            
             const favoriteProductId = results[0]?.favorite_product_id;
 
             /**
@@ -135,12 +139,6 @@ app.get('/users', (req, res) => {
             });
         });
     });
-
-
-
-
-
-
 });
 
 
@@ -223,6 +221,9 @@ async function fetchProductData(productId) {
         );
         Promise.all([productData, productImage]).then((responses) => {
             const product = responses[0].data.product;
+            if (!product) {
+                return null; // Product not found
+            }
             const image = responses[1].data.product.media.nodes[0];
             if (image) {
                 product.image = {
@@ -233,6 +234,7 @@ async function fetchProductData(productId) {
                     height: image.image.height
                 };
             }
+
             return product;
         });
     } catch (error) {
